@@ -1,0 +1,121 @@
+@extends('layouts.backend.main')
+
+@push('css')
+ {{-- <!-- Select2 -->
+ <link rel="stylesheet" href="{{asset('backend/plugins/select2/css/select2.min.css')}}">
+ <link rel="stylesheet" href="{{asset('backend/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css')}}"> --}}
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="crossorigin="anonymous" referrerpolicy="no-referrer" />
+ <style>
+    .select2-container--default .select2-selection--single {
+    background-color: #fff;
+    border: 1px solid #aaa;
+    border-radius: 4px;
+    padding-top: 2px;
+}
+ </style>
+@endpush
+
+@section('content')
+<div class="content-wrapper">
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row pt-3">
+                <div class="col-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title text-primary ">
+                            @if(!isset($assistant))
+                            <i class="fa-solid fa-circle-plus"></i>
+                            @else
+                            <i class="fa-solid fa-spinner"></i>
+                            @endif
+
+                            <span class="pl-1">
+                            @if(!isset($assistant))
+                            Assistant Add
+                            @else
+                            Assistant Update
+                            @endif
+                            </span></h3>
+                        </div>
+                        <div class="card-body">
+                            <form action="{{isset($assistant)? Route('app.assistant.update',[$assistant->id]): Route('app.assistant.store')}}" method="POST">
+                                @if(isset($assistant))
+                                    @method('PUT')
+                                @endif
+                                @csrf
+
+                                <div class="form-group">
+                                    <label>Doctor</label>
+                                    <select name="doctor" class="js-example-placeholder-single js-states form-control @error('doctor') is-invalid @enderror" style="width: 100%">
+                                        <option></option>
+                                        @foreach ($doctors as $doctor)
+                                           <option value="{{$doctor->id}}"
+                                            @if(isset($assistant))
+                                            {{($assistant->doctor_id == $doctor->id)?'selected':''}}
+                                            @endif
+                                            >{{$doctor->name}}</option> 
+                                        @endforeach
+                                    </select>
+                                    @error('doctor')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                  </div>
+
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" name="name" class="form-control @error('name') is-invalid @enderror" id="name" placeholder="Enter Name" value="{{ $assistant->name ?? old('name') }}">
+                                    @error('name')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="email">Email</label>
+                                    <input type="email" name="email" class="form-control  @error('email') is-invalid @enderror" id="email" placeholder="Enter Email" value="{{ $assistant->email ?? old('email') }}">
+                                    @error('email')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="degrees">Degrees</label>
+                                    <input type="text" name="degrees" class="form-control  @error('degrees') is-invalid @enderror" id="degrees" placeholder="Enter Degrees" value="{{ $assistant->degrees ?? old('degrees') }}">
+                                    @error('degrees')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="mobile">Mobile</label>
+                                    <input type="number" name="mobile" class="form-control  @error('mobile') is-invalid @enderror" id="mobile" placeholder="Enter Phone Number" value="{{ $assistant->mobile ?? old('mobile') }}">
+                                    @error('mobile')
+                                    <span class="invalid-feedback" role="alert"><strong>{{ $message }}</strong></span>
+                                    @enderror
+                                </div>
+                    
+                                @if(!isset($assistant))
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-circle-plus"></i><span class="pl-1">Submit</span></button>
+                                @else
+                                <button type="submit" class="btn btn-primary"><i class="fa-solid fa-spinner"></i><span class="pl-1">Update</span></button>
+                                @endif
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <section>
+</div>
+@endsection
+
+@push('js')
+{{-- <!-- Select2 -->
+<script src="{{asset('backend/plugins/select2/js/select2.full.min.js')}}"></script> --}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
+    integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script>
+  $(".js-example-placeholder-single").select2({
+      placeholder: "--Select One--",
+      allowClear: true
+  });
+</script>
+@endpush
